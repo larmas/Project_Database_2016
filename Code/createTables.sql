@@ -1,6 +1,6 @@
-﻿DROP SCHEMA IF EXISTS CiudadDeLosNiños CASCADE;
-CREATE SCHEMA CiudadDeLosNiños;
-SET search_path to CiudadDeLosNiños;
+﻿DROP SCHEMA IF EXISTS ciudaddelosniños CASCADE;
+CREATE SCHEMA ciudaddelosniños;
+SET search_path to ciudaddelosniños;
 
 CREATE TABLE persona (
 dni INTEGER NOT NULL,
@@ -133,7 +133,7 @@ CONSTRAINT medio_pago_valido CHECK (cod_pago > 0)
 
  CREATE OR REPLACE FUNCTION insertar_trigger() RETURNS TRIGGER AS $insertar$
  DECLARE BEGIN
- 		INSERT INTO Auditoria 
+ 		INSERT INTO auditoria 
  		(dni, cuil_cuit,  usuario, fecha_eliminacion)
  		VALUES (OLD.dni, OLD.cuil_cuit, session_user, now());
  		RETURN NULL;

@@ -1,4 +1,4 @@
-﻿SET search_path to CiudadDeLosNiños;
+﻿SET search_path to ciudaddelosniños;
 
 -- Carga de datos a la tabla persona
 INSERT INTO persona 
