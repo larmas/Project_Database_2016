@@ -80,8 +80,8 @@ CONSTRAINT medio_pago_valido CHECK (cod_pago > 0)
  CREATE TABLE aporta (
  dni_donante INTEGER NOT NULL,
  id_programa INTEGER NOT NULL,
- cod_pago INTEGER NOT NULL,
- monto INTEGER NOT NULL,
+ cod_pago INTEGER NOT NULL ,
+ monto INTEGER NOT NULL DEFAULT 0,
  frecuencia VARCHAR NOT NULL,
  CONSTRAINT pk_aporta PRIMARY KEY (dni_donante, id_programa, cod_pago),
  CONSTRAINT fk_donante_aporta FOREIGN KEY (dni_donante) REFERENCES donante ON DELETE CASCADE,

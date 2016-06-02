@@ -130,9 +130,9 @@ VALUES (111, 'Esperanza Carlini');
 
 -- Carga de datos a la tabla aporta
 
-INSERT INTO aporta 
+/**INSERT INTO aporta 
 (dni_donante, id_programa, cod_pago, monto, frecuencia)
-VALUES (37108050, 1, 001, 500, 'mensual');
+VALUES (37108050, 1, 001, 500, 'mensual');*/
 
 INSERT INTO aporta 
 (dni_donante, id_programa, cod_pago, monto, frecuencia)
@@ -150,6 +150,9 @@ INSERT INTO aporta
 (dni_donante, id_programa, cod_pago, monto, frecuencia)
 VALUES (37108056, 5, 111, 4000, 'anual');
 
+INSERT INTO aporta
+(dni_donante, id_programa, cod_pago, monto, frecuencia)
+VALUES (37108056, 3, 001, 1500, 'trimestral');
 -- Carga de datos a la tabla nombre empresa
 
 INSERT INTO nombre_empresa 
