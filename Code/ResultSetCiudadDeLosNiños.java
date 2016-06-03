@@ -120,27 +120,22 @@ public class ResultSetCiudadDeLosNiños {
 	public static void showDonanteAportMedioPago(Connection connection)throws ClassNotFoundException, SQLException {
 		//TODO: Implementar consulta que devuelva el listado de todos los donantes con sus aportes mensuales y los datos
 		//     de los medios de pago.
-		String query;
-		Statement statement;
-		ResultSet resultSet;
-		if(isCodOfCard( ,connection)){
-			query = "SELECT p.dni, p.nombre, p.apellido, ap.monto_donante, t.nombre_tarjeta, t.cod_verificacion, t.numero_tarjeta, t.vencimiento "+
+		String query = "SELECT p.dni, p.nombre, p.apellido, ap.monto_donante, t.nombre_tarjeta, t.cod_verificacion, t.numero_tarjeta, t.vencimiento "+
 					"FROM persona p,(SELECT dni_donante, SUM(monto) AS monto_donante, cod_pago FROM aporta GROUP BY dni_donante) ap, "+medioDePago(ap.cod_pago,connection)+" m "+
 					"WHERE p.dni = ap.dni_donante AND ap.cod_pago = m.cod_pago"
-			statement = connection.createStatement();
-			resultSet = statement.executeQuery(query);
-			while(resultSet.next()) {
-			    System.out.print("\n");
-			    System.out.print(" DNI: " + resultSet.getString(1)+"\n");
-			    System.out.print(" Nombre: " + resultSet.getString(2)+"\n");
-			    System.out.print(" Apellido: " + resultSet.getString(3)+"\n");
-			    System.out.print(" Aporte total: " + resultSet.getString(4)+"\n");
-			    System.out.print(" Nombre tarjeta: " + resultSet.getString(5)+"\n");
-			    System.out.print(" Codigo de verificacion: " + resultSet.getString(6)+"\n");
-			    System.out.print(" Numero de tarjeta: " + resultSet.getString(7)+"\n");
-			    System.out.print(" Vencimiento: " + resultSet.getString(8)+"\n");
-				System.out.print("\n");
-			}
+		Statement statement = connection.createStatement();
+		ResuslSet resultSet = statement.executeQuery(query);
+		while(resultSet.next()) {
+		    System.out.print("\n");
+		    System.out.print(" DNI: " + resultSet.getString(1)+"\n");
+		    System.out.print(" Nombre: " + resultSet.getString(2)+"\n");
+		    System.out.print(" Apellido: " + resultSet.getString(3)+"\n");
+		    System.out.print(" Aporte total: " + resultSet.getString(4)+"\n");
+		    System.out.print(" Nombre tarjeta: " + resultSet.getString(5)+"\n");
+		    System.out.print(" Codigo de verificacion: " + resultSet.getString(6)+"\n");
+		    System.out.print(" Numero de tarjeta: " + resultSet.getString(7)+"\n");
+		    System.out.print(" Vencimiento: " + resultSet.getString(8)+"\n");
+			System.out.print("\n");
 		}
 	}
 
