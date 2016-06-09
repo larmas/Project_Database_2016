@@ -121,10 +121,15 @@ public class ResultSetCiudadDeLosNiños {
 		//TODO: Implementar consulta que devuelva el listado de todos los donantes con sus aportes mensuales y los datos
 		//     de los medios de pago.
 		String query = "SELECT p.dni, p.nombre, p.apellido, ap.monto_donante, t.nombre_tarjeta, t.cod_verificacion, t.numero_tarjeta, t.vencimiento "+
-					"FROM persona p,(SELECT dni_donante, SUM(monto) AS monto_donante, cod_pago FROM aporta GROUP BY dni_donante) ap, "+medioDePago(ap.cod_pago,connection)+" m "+
-					"WHERE p.dni = ap.dni_donante AND ap.cod_pago = m.cod_pago"
+					"FROM persona p,(((SELECT ap.dni_donante, SUM(ap.monto) AS ap.monto_donante, ap.cod_pago FROM aporta GROUP BY ap.dni_donante) ap, tarjeta t), debito_transferencia d "+
+										"WHERE ap.cod_pago = t.cod_pago OR ap.cod_pago = d.cod_pago"
+					"WHERE p.dni = ap.dni_donante"
 		Statement statement = connection.createStatement();
 		ResuslSet resultSet = statement.executeQuery(query);
+		
+
+
+
 		while(resultSet.next()) {
 		    System.out.print("\n");
 		    System.out.print(" DNI: " + resultSet.getString(1)+"\n");
