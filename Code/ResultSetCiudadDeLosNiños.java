@@ -120,13 +120,18 @@ public class ResultSetCiudadDeLosNiños {
 	public static void showDonanteAportMedioPago(Connection connection)throws ClassNotFoundException, SQLException {
 		//TODO: Implementar consulta que devuelva el listado de todos los donantes con sus aportes mensuales y los datos
 		//     de los medios de pago.
-		String query = "SELECT p.dni, p.nombre, p.apellido, ap.monto_donante, t.nombre_tarjeta, t.cod_verificacion, t.numero_tarjeta, t.vencimiento "+
-					"FROM persona p,(((SELECT ap.dni_donante, SUM(ap.monto) AS ap.monto_donante, ap.cod_pago FROM aporta GROUP BY ap.dni_donante) ap, tarjeta t), debito_transferencia d "+
-										"WHERE ap.cod_pago = t.cod_pago OR ap.cod_pago = d.cod_pago"
-					"WHERE p.dni = ap.dni_donante"
-		Statement statement = connection.createStatement();
-		ResuslSet resultSet = statement.executeQuery(query);
+		System.out.println("Mostrando donantes y aporte total");
+		String queryAux1 = "SELECT t.cod_pago, t.cod_verificacion, t.vencimiento, t.numero_tarjeta,t.nombre_tarjeta, 'no aplica', 'no aplica', 'no aplica', 'no aplica', 'no aplica' "+
+							"FROM  tarjeta t ";
 		
+		String queryAux2 = 	"SELECT 'no aplica', 'no aplica', 'no aplica', 'no aplica', 'no aplica', d.cod_pago, d.cbu, d.nro_cuenta, d.tipo, d.sucursal_banco, d.nombre_banco "+
+							"FROM  debito_transferencia d";		   
+		
+		String queryAux3 = "SELECT * FROM aporta ap, ("+queryAux1+" UNION "+queryAux2+") m "+
+							"WHERE ap.cod_pago = m.cod_pago";
+		//String query = 
+		Statement statement = connection.createStatement();
+		ResultSet resultSet = statement.executeQuery(queryAux3);
 
 
 
@@ -136,10 +141,10 @@ public class ResultSetCiudadDeLosNiños {
 		    System.out.print(" Nombre: " + resultSet.getString(2)+"\n");
 		    System.out.print(" Apellido: " + resultSet.getString(3)+"\n");
 		    System.out.print(" Aporte total: " + resultSet.getString(4)+"\n");
-		    System.out.print(" Nombre tarjeta: " + resultSet.getString(5)+"\n");
+		   	System.out.print(" Nombre tarjeta: " + resultSet.getString(5)+"\n");
 		    System.out.print(" Codigo de verificacion: " + resultSet.getString(6)+"\n");
-		    System.out.print(" Numero de tarjeta: " + resultSet.getString(7)+"\n");
-		    System.out.print(" Vencimiento: " + resultSet.getString(8)+"\n");
+		   /* System.out.print(" Numero de tarjeta: " + resultSet.getString(7)+"\n");
+		    System.out.print(" Vencimiento: " + resultSet.getString(8)+"\n");*/
 			System.out.print("\n");
 		}
 	}
