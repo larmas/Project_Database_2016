@@ -144,11 +144,11 @@ VALUES (37108054, 4, 123, 300, 'mensual');
 
 INSERT INTO aporta 
 (dni_donante, id_programa, cod_pago, monto, frecuencia)
-VALUES (37108050, 3, 001, 1500, 'trimestral');
+VALUES (37108050, 3, 111, 1500, 'trimestral');
 
 INSERT INTO aporta 
 (dni_donante, id_programa, cod_pago, monto, frecuencia)
-VALUES (37108056, 5, 111, 4000, 'anual');
+VALUES (37108056, 5, 001, 4000, 'anual');
 
 INSERT INTO aporta
 (dni_donante, id_programa, cod_pago, monto, frecuencia)

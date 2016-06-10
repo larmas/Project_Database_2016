@@ -115,6 +115,7 @@ CONSTRAINT medio_pago_valido CHECK (cod_pago > 0)
  sucursal_banco VARCHAR NOT NULL,
  nombre_banco VARCHAR NOT NULL,
  CONSTRAINT debito_cod_pago PRIMARY KEY (cod_pago),
+ CONSTRAINT cod_pago_debito_valido CHECK (cod_pago > 0),
  CONSTRAINT debito_trans_cod_pago FOREIGN KEY (cod_pago) REFERENCES medio_de_pago ON DELETE CASCADE
  );
 

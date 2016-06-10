@@ -121,13 +121,15 @@ public class ResultSetCiudadDeLosNiños {
 		//TODO: Implementar consulta que devuelva el listado de todos los donantes con sus aportes mensuales y los datos
 		//     de los medios de pago.
 		System.out.println("Mostrando donantes y aporte total");
-		String queryAux1 = "SELECT t.cod_pago, t.cod_verificacion, t.vencimiento, t.numero_tarjeta,t.nombre_tarjeta, 'no aplica', 'no aplica', 'no aplica', 'no aplica', 'no aplica' "+
-							"FROM  tarjeta t ";
+		String queryAux1 = "SELECT cod_pago, cod_verificacion, vencimiento, numero_tarjeta, nombre_tarjeta, 0, 0, 0, 'no aplica', 'no aplica', 'no aplica' "+
+							"FROM  tarjeta";
 		
-		String queryAux2 = 	"SELECT 'no aplica', 'no aplica', 'no aplica', 'no aplica', 'no aplica', d.cod_pago, d.cbu, d.nro_cuenta, d.tipo, d.sucursal_banco, d.nombre_banco "+
-							"FROM  debito_transferencia d";		   
+		String queryAux2 = 	"SELECT 0, 0, null, 0, 'no aplica', cod_pago, cbu, nro_cuenta, tipo, sucursal_banco, nombre_banco "+
+							"FROM  debito_transferencia";		   
 		
-		String queryAux3 = "SELECT * FROM aporta ap, ("+queryAux1+" UNION "+queryAux2+") m "+
+		String queryAux3 = "SELECT ap.dni_donante, ap.cod_pago, ap.monto, m.nombre_tarjeta, m.numero_tarjeta, "+
+		 					"m.vencimiento, m.cod_verificacion, m.nombre_banco, m.sucursal_banco, m.tipo, m.nro_cuenta, m.cbu "+
+		 					"FROM aporta ap, ("+queryAux1+" UNION "+queryAux2+") m "+
 							"WHERE ap.cod_pago = m.cod_pago";
 		//String query = 
 		Statement statement = connection.createStatement();
