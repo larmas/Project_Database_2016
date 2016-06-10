@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.util.Scanner;
 public class ResultSetCiudadDeLosNiños {
 	
 	public static Connection createConnection( String driver, String url, String username, String password)throws ClassNotFoundException, SQLException {
@@ -33,7 +34,10 @@ public class ResultSetCiudadDeLosNiños {
 		}
 	}
 
-	public static void deleteDonante(int dni_donante, Connection connection)throws ClassNotFoundException, SQLException, InvalidDataException {
+	public static void deleteDonante(Connection connection)throws ClassNotFoundException, SQLException, InvalidDataException {
+		System.out.println("Inserte el dni del donante a eliminar");
+		Scanner sc = new Scanner(System.in);
+		int dni_donante = sc.nextInt();
 		if (alreadyExistsDonante(dni_donante,connection)){
 			String query = "DELETE FROM donante WHERE donante.dni = "+dni_donante+"";
 			Statement statement = connection.createStatement();
@@ -41,13 +45,35 @@ public class ResultSetCiudadDeLosNiños {
 			System.out.println("Donante deleted");
 		}else{
 			throw new InvalidDataException("DELETE DONANTE: Donante does not exists.");
-		}
+		}																
 	}
 
-	public static void insertPadrino(int dniAux, String nombreAux, String apellidoAux, String fecha_nacAux, String direccionAux, int cod_postalAux, String e_mailAux, 
-									 String facebookAux, int edadAux, int tel_fijoAux, int tel_celAux, 
-									 Connection connection)throws ClassNotFoundException, SQLException, InvalidDataException {
+	public static void insertPadrino(Connection connection)throws ClassNotFoundException, SQLException, InvalidDataException {
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Ingrese el dni del padrino");
+		int dniAux = sc.nextInt();
 		if (!alreadyExistsPadrino(dniAux,connection)){
+			System.out.println("Ingrese el nombre del padrino");
+			String nombreAux = sc.nextLine();
+			System.out.println("Ingrese el apellido del padrino");
+			String apellidoAux = sc.nextLine();
+			System.out.println("Ingrese la fecha de nacimiento del padrino");
+			String fecha_nacAux = sc.nextLine();
+			System.out.println("Ingrese la direccion del padrino");
+			String direccionAux = sc.nextLine();
+			System.out.println("Ingrese el codigo postal del padrino");
+			int cod_postalAux = sc.nextInt();
+			System.out.println("Ingrese la direccion de e-mail del padrino");
+			String e_mailAux = sc.nextLine();
+			System.out.println("Ingrese el facebook del padrino");
+			String facebookAux = sc.nextLine();
+			System.out.println("Ingrese la edad del padrino");
+			int edadAux = sc.nextInt();
+			System.out.println("Ingrese el telefono fijo del padrino");
+			int tel_fijoAux = sc.nextInt();
+			System.out.println("Ingrese el telefono celular del padrino");
+			int tel_celAux = sc.nextInt();
+
 			String query = "INSERT INTO persona (dni, nombre, apellido, fecha_nac, direccion, cod_postal, e_mail, facebook, edad, tel_fijo, tel_cel)"
 							+ " VALUES ("+dniAux+", "+nombreAux+", "+apellidoAux+", "+fecha_nacAux+", "+direccionAux+", "+cod_postalAux+", "+e_mailAux+", "+facebookAux+", "+edadAux+", "+tel_fijoAux+", "+tel_celAux+")";
 			Statement statement = connection.createStatement();
@@ -124,7 +150,7 @@ public class ResultSetCiudadDeLosNiños {
 		String queryAux1 = "SELECT cod_pago, cod_verificacion, vencimiento, numero_tarjeta, nombre_tarjeta, 0, 0, 0, 'no aplica', 'no aplica', 'no aplica' "+
 							"FROM  tarjeta";
 		
-		String queryAux2 = 	"SELECT 0, 0, null, 0, 'no aplica', cod_pago, cbu, nro_cuenta, tipo, sucursal_banco, nombre_banco "+
+		String queryAux2 = 	"SELECT 0, 0, null, 0, 'no aplica', cod_pago, cbu, nro_cuenta, tipo, sucursal_banco, nombre_banco AS nombre_banco "+
 							"FROM  debito_transferencia";		   
 		
 		String queryAux3 = "SELECT ap.dni_donante, ap.cod_pago, ap.monto, m.nombre_tarjeta, m.numero_tarjeta, "+
@@ -177,10 +203,11 @@ public class ResultSetCiudadDeLosNiños {
 			showDonanteAportMedioPago(connection);
 
 //----------------Delete a Donante----------------------------------------------------------------------------------------------------------------------------
-			int dni_donante_eliminar = 37108056;
-			//deleteDonante(dni_donante_eliminar, connection); 
+			//int dni_donante_eliminar = 37108056;
+			//deleteDonante(connection); 
 
 //----------------Data to insert a padrino--------------------------------------------------------------------------------------------------------------------------
+			/*
 			int dni = 37876048;
 			String nombre = new String("'Lucas'");
 			String apellido = new String("'Armas'");
@@ -192,9 +219,9 @@ public class ResultSetCiudadDeLosNiños {
 			int edad = 21;
 			int tel_fijo = 4970352;
 			int tel_cel = 12343334;
-
+			*/
 //------------------Insert a padrino----------------------------------------------------------------------------------------------------------
-			//insertPadrino(dni, nombre, apellido, fecha_nac, direccion, cod_postal, e_mail, facebook, edad, tel_fijo, tel_cel, connection);
+			//insertPadrino(connection);
 
 //------------------Catch exceptions--------------------------------------------------------------------------------------------------------------------------
 		}catch(ClassNotFoundException cnfe) {
