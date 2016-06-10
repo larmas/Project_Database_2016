@@ -17,7 +17,7 @@ public class ResultSetCiudadDeLosNiños {
 	}
 
 	public static void showDonantesWithAporta(Connection connection)throws ClassNotFoundException, SQLException {
-		System.out.println("Mostrando padrinos con sus aportes");
+		System.out.println("Mostrando donantes con sus aportes");
 		String query = "SELECT p.dni, p.nombre, p.apellido, pr.nombre, a.monto, a.frecuencia FROM persona p, aporta a, programa pr WHERE p.dni=a.dni_donante AND a.id_programa=pr.id_programa";
 		Statement statement = connection.createStatement();
 		ResultSet resultSet = statement.executeQuery(query);
@@ -49,30 +49,31 @@ public class ResultSetCiudadDeLosNiños {
 	}
 
 	public static void insertPadrino(Connection connection)throws ClassNotFoundException, SQLException, InvalidDataException {
-		Scanner sc = new Scanner(System.in);
-		System.out.println("Ingrese el dni del padrino");
-		int dniAux = sc.nextInt();
+		Scanner sci = new Scanner(System.in);
+		System.out.println("Ingrese el dni del padrino"+"\n");
+		int dniAux = sci.nextInt();
 		if (!alreadyExistsPadrino(dniAux,connection)){
+			Scanner scs = new Scanner(System.in);
 			System.out.println("Ingrese el nombre del padrino");
-			String nombreAux = sc.nextLine();
+			String nombreAux = scs.nextLine();
 			System.out.println("Ingrese el apellido del padrino");
-			String apellidoAux = sc.nextLine();
+			String apellidoAux = scs.nextLine();
 			System.out.println("Ingrese la fecha de nacimiento del padrino");
-			String fecha_nacAux = sc.nextLine();
-			System.out.println("Ingrese la direccion del padrino");
-			String direccionAux = sc.nextLine();
+			String fecha_nacAux = scs.nextLine();
+			System.out.println("Ingrese la direccion del padrino encerrada entre '...'");
+			String direccionAux = scs.nextLine();
 			System.out.println("Ingrese el codigo postal del padrino");
-			int cod_postalAux = sc.nextInt();
-			System.out.println("Ingrese la direccion de e-mail del padrino");
-			String e_mailAux = sc.nextLine();
+			int cod_postalAux = sci.nextInt();
+			System.out.println("Ingrese la direccion de e-mail del padrino encerrada entre '...'");
+			String e_mailAux = scs.nextLine();
 			System.out.println("Ingrese el facebook del padrino");
-			String facebookAux = sc.nextLine();
+			String facebookAux = scs.nextLine();
 			System.out.println("Ingrese la edad del padrino");
-			int edadAux = sc.nextInt();
+			int edadAux = sci.nextInt();
 			System.out.println("Ingrese el telefono fijo del padrino");
-			int tel_fijoAux = sc.nextInt();
+			int tel_fijoAux = sci.nextInt();
 			System.out.println("Ingrese el telefono celular del padrino");
-			int tel_celAux = sc.nextInt();
+			int tel_celAux = sci.nextInt();
 
 			String query = "INSERT INTO persona (dni, nombre, apellido, fecha_nac, direccion, cod_postal, e_mail, facebook, edad, tel_fijo, tel_cel)"
 							+ " VALUES ("+dniAux+", "+nombreAux+", "+apellidoAux+", "+fecha_nacAux+", "+direccionAux+", "+cod_postalAux+", "+e_mailAux+", "+facebookAux+", "+edadAux+", "+tel_fijoAux+", "+tel_celAux+")";
@@ -82,7 +83,7 @@ public class ResultSetCiudadDeLosNiños {
 			query ="INSERT INTO padrino (dni) VALUES("+dniAux+")";
 			statement = connection.createStatement();
 			statement.executeUpdate(query);
-			System.out.println("Padrino added.");
+			System.out.println("Padrino added."+"\n");
 		}else{
 			throw new InvalidDataException("INSERT PADRINO: padrino already exists.");
 		}
@@ -147,16 +148,16 @@ public class ResultSetCiudadDeLosNiños {
 		//TODO: Implementar consulta que devuelva el listado de todos los donantes con sus aportes mensuales y los datos
 		//     de los medios de pago.
 		System.out.println("Mostrando donantes y aporte total");
-		String queryAux1 = "SELECT cod_pago, cod_verificacion, vencimiento, numero_tarjeta, nombre_tarjeta, 0, 0, 0, 'no aplica', 'no aplica', 'no aplica' "+
-							"FROM  tarjeta";
+		String queryAux1 = "SELECT cod_pago, nombre_tarjeta, numero_tarjeta, vencimiento, cod_verificacion, 'no aplica' AS nombre_banco, "+
+		                   "'no aplica' AS sucursal_banco, 'no aplica' AS tipo, null AS nro_cuenta, null AS cbu FROM  tarjeta";
 		
-		String queryAux2 = 	"SELECT 0, 0, null, 0, 'no aplica', cod_pago, cbu, nro_cuenta, tipo, sucursal_banco, nombre_banco AS nombre_banco "+
-							"FROM  debito_transferencia";		   
+		String queryAux2 = 	"SELECT cod_pago, 'no aplica' AS nombre_tarjeta, null AS numero_tarjeta, null AS vencimiento, "+
+						    "null AS cod_verificacion, nombre_banco, sucursal_banco, tipo, nro_cuenta, cbu FROM  debito_transferencia";		   
 		
-		String queryAux3 = "SELECT ap.dni_donante, ap.cod_pago, ap.monto, m.nombre_tarjeta, m.numero_tarjeta, "+
-		 					"m.vencimiento, m.cod_verificacion, m.nombre_banco, m.sucursal_banco, m.tipo, m.nro_cuenta, m.cbu "+
-		 					"FROM aporta ap, ("+queryAux1+" UNION "+queryAux2+") m "+
-							"WHERE ap.cod_pago = m.cod_pago";
+		String queryAux3 = "SELECT p.dni, p.nombre, p.apellido, SUM(ap.monto) AS monto_total, m.cod_pago, m.nombre_tarjeta, m.numero_tarjeta, "+
+						   "m.vencimiento, m. cod_verificacion, m. nombre_banco, m.sucursal_banco, m.tipo, m.nro_cuenta, m.cbu "+
+						   "FROM aporta ap, ("+queryAux1+" UNION "+queryAux2+") m, persona p "+
+						   "WHERE (ap.dni_donante = p.dni) AND (ap.cod_pago = m.cod_pago) GROUP BY p.dni, ap.monto, m.cod_pago, m.nombre_tarjeta, m.numero_tarjeta, m.vencimiento, m. cod_verificacion, m. nombre_banco, m.sucursal_banco, m.tipo, m.nro_cuenta, m.cbu";
 		//String query = 
 		Statement statement = connection.createStatement();
 		ResultSet resultSet = statement.executeQuery(queryAux3);
@@ -169,11 +170,41 @@ public class ResultSetCiudadDeLosNiños {
 		    System.out.print(" Nombre: " + resultSet.getString(2)+"\n");
 		    System.out.print(" Apellido: " + resultSet.getString(3)+"\n");
 		    System.out.print(" Aporte total: " + resultSet.getString(4)+"\n");
-		   	System.out.print(" Nombre tarjeta: " + resultSet.getString(5)+"\n");
-		    System.out.print(" Codigo de verificacion: " + resultSet.getString(6)+"\n");
-		   /* System.out.print(" Numero de tarjeta: " + resultSet.getString(7)+"\n");
-		    System.out.print(" Vencimiento: " + resultSet.getString(8)+"\n");*/
+		   	System.out.print(" Codigo de pago: " + resultSet.getString(5)+"\n");
+		    System.out.print(" Nombre tarjeta: " + resultSet.getString(6)+"\n");
+		   	System.out.print(" Numero de tarjeta: " + resultSet.getString(7)+"\n");
+		   	System.out.print(" Vencimiento: " + resultSet.getString(8)+"\n");
+		   	System.out.print(" Codigo de verificacion: " + resultSet.getString(9)+"\n");
+		   	System.out.print(" Nombre banco: " + resultSet.getString(10)+"\n");
+		   	System.out.print(" Sucursal banco: " + resultSet.getString(11)+"\n");
+		   	System.out.print(" Tipo: " + resultSet.getString(12)+"\n");
+		   	System.out.print(" Numero de cuenta: " + resultSet.getString(13)+"\n");
+		   	System.out.print(" CBU: " + resultSet.getString(14)+"\n");
 			System.out.print("\n");
+		}
+	} 
+
+	
+	public static void menuOpciones(Connection connection)throws ClassNotFoundException, SQLException, InvalidDataException{
+		int selection=0;
+		while (selection!=6){
+			System.out.println("Ingrese el numero de la operacion que quiere realizar");
+			System.out.println("1) Insertar un padrino.");
+			System.out.println("2) Eliminar un donante.");
+			System.out.println("3) Ver donantes que aportan a mas de un programa.");
+			System.out.println("4) Ver los aportes que recibe cada programa.");
+			System.out.println("5) Ver los donantes con sus aportes.");
+			System.out.println("6) Ver los donantes con su aporte total y su medio de pago.");
+			System.out.println("7) Salir.");
+			Scanner sc = new Scanner(System.in);
+			selection = sc.nextInt();
+			if(selection==1){insertPadrino(connection);};
+			if(selection==2){deleteDonante(connection);};
+			if(selection==3){showDonanteAport(connection);};
+			if(selection==4){showCantAportPrograms(connection);};
+			if(selection==5){showDonantesWithAporta(connection);};
+			if(selection==6){showDonanteAportMedioPago(connection);};
+			if((selection<=0)||(selection>7)){System.out.println("Opcion incorrecta");};
 		}
 	}
 
@@ -189,7 +220,7 @@ public class ResultSetCiudadDeLosNiños {
 //------------------Set patch schema------------------------------------------------------------------------------------------------------------------------
 			String nameSchema = "ciudaddelosniños";
 			setSchema(nameSchema, connection);
-
+/*
 //----------------Consultations donante and programs provides---------------------------------------------------------------------------------------------------------------------------	  
 			showDonantesWithAporta(connection);
 
@@ -200,7 +231,7 @@ public class ResultSetCiudadDeLosNiños {
 			showDonanteAport(connection);
 
 //--------------------------------------------------------------------------------------------------------------------------------------------
-			showDonanteAportMedioPago(connection);
+			//showDonanteAportMedioPago(connection);
 
 //----------------Delete a Donante----------------------------------------------------------------------------------------------------------------------------
 			//int dni_donante_eliminar = 37108056;
@@ -222,15 +253,16 @@ public class ResultSetCiudadDeLosNiños {
 			*/
 //------------------Insert a padrino----------------------------------------------------------------------------------------------------------
 			//insertPadrino(connection);
-
+			/**/
+			menuOpciones(connection);
 //------------------Catch exceptions--------------------------------------------------------------------------------------------------------------------------
 		}catch(ClassNotFoundException cnfe) {
 			System.err.println("Error loading driver: " + cnfe);
 		}catch(SQLException sqle) {
 			sqle.printStackTrace();
 		  	System.err.println("Error connecting: " + sqle);
-		}/*catch(InvalidDataException s){
+		}catch(InvalidDataException s){
 				System.out.println(s.getMessage());
-		}*/
+		}
 	}
 }
