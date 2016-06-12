@@ -182,20 +182,61 @@ public class ResultSetCiudadDeLosNiños {
 		   	System.out.print(" CBU: " + resultSet.getString(14)+"\n");
 			System.out.print("\n");
 		}
-	} 
+	}
+
+	public static void showDonanteAportMedioPagoMensuales(Connection connection)throws ClassNotFoundException, SQLException {
+		//TODO: Implementar consulta que devuelva el listado de todos los donantes con sus aportes mensuales y los datos
+		//     de los medios de pago.
+		System.out.println("Mostrando donantes y aporte mensual");
+		String queryAux1 = "SELECT cod_pago, nombre_tarjeta, numero_tarjeta, vencimiento, cod_verificacion, 'no aplica' AS nombre_banco, "+
+		                   "'no aplica' AS sucursal_banco, 'no aplica' AS tipo, null AS nro_cuenta, null AS cbu FROM  tarjeta";
+		
+		String queryAux2 = 	"SELECT cod_pago, 'no aplica' AS nombre_tarjeta, null AS numero_tarjeta, null AS vencimiento, "+
+						    "null AS cod_verificacion, nombre_banco, sucursal_banco, tipo, nro_cuenta, cbu FROM  debito_transferencia";		   
+		
+		String queryAux3 = "SELECT p.dni, p.nombre, p.apellido, ap.monto, m.cod_pago, m.nombre_tarjeta, m.numero_tarjeta, "+
+						   "m.vencimiento, m. cod_verificacion, m. nombre_banco, m.sucursal_banco, m.tipo, m.nro_cuenta, m.cbu "+
+						   "FROM aporta ap, ("+queryAux1+" UNION "+queryAux2+") m, persona p "+
+						   "WHERE (ap.dni_donante = p.dni) AND (ap.cod_pago = m.cod_pago) AND (ap.frecuencia = 'mensual') GROUP BY p.dni, ap.monto, m.cod_pago, m.nombre_tarjeta, m.numero_tarjeta, m.vencimiento, m. cod_verificacion, m. nombre_banco, m.sucursal_banco, m.tipo, m.nro_cuenta, m.cbu";
+		//String query = 
+		Statement statement = connection.createStatement();
+		ResultSet resultSet = statement.executeQuery(queryAux3);
+
+
+
+		while(resultSet.next()) {
+		    System.out.print("\n");
+		    System.out.print(" DNI: " + resultSet.getString(1)+"\n");
+		    System.out.print(" Nombre: " + resultSet.getString(2)+"\n");
+		    System.out.print(" Apellido: " + resultSet.getString(3)+"\n");
+		    System.out.print(" Aporte: " + resultSet.getString(4)+"\n");
+		   	System.out.print(" Codigo de pago: " + resultSet.getString(5)+"\n");
+		    System.out.print(" Nombre tarjeta: " + resultSet.getString(6)+"\n");
+		   	System.out.print(" Numero de tarjeta: " + resultSet.getString(7)+"\n");
+		   	System.out.print(" Vencimiento: " + resultSet.getString(8)+"\n");
+		   	System.out.print(" Codigo de verificacion: " + resultSet.getString(9)+"\n");
+		   	System.out.print(" Nombre banco: " + resultSet.getString(10)+"\n");
+		   	System.out.print(" Sucursal banco: " + resultSet.getString(11)+"\n");
+		   	System.out.print(" Tipo: " + resultSet.getString(12)+"\n");
+		   	System.out.print(" Numero de cuenta: " + resultSet.getString(13)+"\n");
+		   	System.out.print(" CBU: " + resultSet.getString(14)+"\n");
+			System.out.print("\n");
+		}
+	}  
 
 	
 	public static void menuOpciones(Connection connection)throws ClassNotFoundException, SQLException, InvalidDataException{
 		int selection=0;
-		while (selection!=6){
+		while (selection!=8){
 			System.out.println("Ingrese el numero de la operacion que quiere realizar");
 			System.out.println("1) Insertar un padrino.");
 			System.out.println("2) Eliminar un donante.");
 			System.out.println("3) Ver donantes que aportan a mas de un programa.");
 			System.out.println("4) Ver los aportes que recibe cada programa.");
 			System.out.println("5) Ver los donantes con sus aportes.");
-			System.out.println("6) Ver los donantes con su aporte total y su medio de pago.");
-			System.out.println("7) Salir.");
+			System.out.println("6) Ver los donantes con su aporte mensual y su medio de pago.");
+			System.out.println("7) Ver los donantes con aporte mensual y su medio de pago.");
+			System.out.println("8) Salir.");
 			Scanner sc = new Scanner(System.in);
 			selection = sc.nextInt();
 			if(selection==1){insertPadrino(connection);};
@@ -204,7 +245,8 @@ public class ResultSetCiudadDeLosNiños {
 			if(selection==4){showCantAportPrograms(connection);};
 			if(selection==5){showDonantesWithAporta(connection);};
 			if(selection==6){showDonanteAportMedioPago(connection);};
-			if((selection<=0)||(selection>7)){System.out.println("Opcion incorrecta");};
+			if(selection==7){showDonanteAportMedioPagoMensuales(connection);};
+			if((selection<=0)||(selection>8)){System.out.println("Opcion incorrecta");};
 		}
 	}
 
