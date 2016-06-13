@@ -147,7 +147,7 @@ public class ResultSetCiudadDeLosNiños {
 	public static void showDonanteAportMedioPago(Connection connection)throws ClassNotFoundException, SQLException {
 		//TODO: Implementar consulta que devuelva el listado de todos los donantes con sus aportes mensuales y los datos
 		//     de los medios de pago.
-		System.out.println("Mostrando donantes y aporte total");
+		System.out.println("Mostrando donantes, aporte total y medio de pago");
 		String queryAux1 = "SELECT cod_pago, nombre_tarjeta, numero_tarjeta, vencimiento, cod_verificacion, 'no aplica' AS nombre_banco, "+
 		                   "'no aplica' AS sucursal_banco, 'no aplica' AS tipo, null AS nro_cuenta, null AS cbu FROM  tarjeta";
 		
@@ -233,8 +233,8 @@ public class ResultSetCiudadDeLosNiños {
 			System.out.println("2) Eliminar un donante.");
 			System.out.println("3) Ver donantes que aportan a mas de un programa.");
 			System.out.println("4) Ver los aportes que recibe cada programa.");
-			System.out.println("5) Ver los donantes con sus aportes.");
-			System.out.println("6) Ver los donantes con su aporte mensual y su medio de pago.");
+			System.out.println("5) Ver los donantes con sus aportes totales.");
+			System.out.println("6) Ver los donantes con su aporte y su medio de pago.");
 			System.out.println("7) Ver los donantes con aporte mensual y su medio de pago.");
 			System.out.println("8) Salir.");
 			Scanner sc = new Scanner(System.in);
@@ -262,41 +262,10 @@ public class ResultSetCiudadDeLosNiños {
 //------------------Set patch schema------------------------------------------------------------------------------------------------------------------------
 			String nameSchema = "ciudaddelosniños";
 			setSchema(nameSchema, connection);
-/*
-//----------------Consultations donante and programs provides---------------------------------------------------------------------------------------------------------------------------	  
-			showDonantesWithAporta(connection);
 
-//-------------------------------------------------------------------------------------------------------------------------------------------
-			showCantAportPrograms(connection);
-
-//--------------------------------------------------------------------------------------------------------------------------------------------
-			showDonanteAport(connection);
-
-//--------------------------------------------------------------------------------------------------------------------------------------------
-			//showDonanteAportMedioPago(connection);
-
-//----------------Delete a Donante----------------------------------------------------------------------------------------------------------------------------
-			//int dni_donante_eliminar = 37108056;
-			//deleteDonante(connection); 
-
-//----------------Data to insert a padrino--------------------------------------------------------------------------------------------------------------------------
-			/*
-			int dni = 37876048;
-			String nombre = new String("'Lucas'");
-			String apellido = new String("'Armas'");
-			String fecha_nac = new String("'20/07/1994'");
-			String direccion = new String("'Moldes 441'");
-			int cod_postal = 5805;
-			String e_mail = new String("'lucas.armas@gmail.com'");
-			String facebook = new String("'lucasarmas'");
-			int edad = 21;
-			int tel_fijo = 4970352;
-			int tel_cel = 12343334;
-			*/
-//------------------Insert a padrino----------------------------------------------------------------------------------------------------------
-			//insertPadrino(connection);
-			/**/
+//----------------MAIN MENU---------------------------------------------------------------------------------------------------------------------------	  
 			menuOpciones(connection);
+
 //------------------Catch exceptions--------------------------------------------------------------------------------------------------------------------------
 		}catch(ClassNotFoundException cnfe) {
 			System.err.println("Error loading driver: " + cnfe);
