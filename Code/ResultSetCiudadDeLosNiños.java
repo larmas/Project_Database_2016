@@ -125,12 +125,12 @@ public class ResultSetCiudadDeLosNiños {
 	}
 
 	public static void showDonanteAport(Connection connection)throws ClassNotFoundException, SQLException {
-		System.out.println("Mostrando donantes que aportan a mas de un programa");
+		System.out.println("Mostrando donantes que aportan a mas de dos programa");
 		String query = "SELECT p.dni, p.nombre, p.apellido "+
 					   "FROM persona p, (SELECT DISTINCT dni_donante FROM aporta "+
 									     "WHERE dni_donante IN (SELECT dni_donante FROM aporta "+
 									   	       					"GROUP BY dni_donante "+
-									   						    "HAVING COUNT(dni_donante) > 1)) ap "+
+									   						    "HAVING COUNT(dni_donante) > 2)) ap "+
 					   	"WHERE p.dni = ap.dni_donante";
 		Statement statement = connection.createStatement();
 		ResultSet resultSet = statement.executeQuery(query);
@@ -157,7 +157,8 @@ public class ResultSetCiudadDeLosNiños {
 		String queryAux3 = "SELECT p.dni, p.nombre, p.apellido, SUM(ap.monto) AS monto_total, m.cod_pago, m.nombre_tarjeta, m.numero_tarjeta, "+
 						   "m.vencimiento, m. cod_verificacion, m. nombre_banco, m.sucursal_banco, m.tipo, m.nro_cuenta, m.cbu "+
 						   "FROM aporta ap, ("+queryAux1+" UNION "+queryAux2+") m, persona p "+
-						   "WHERE (ap.dni_donante = p.dni) AND (ap.cod_pago = m.cod_pago) GROUP BY p.dni, ap.monto, m.cod_pago, m.nombre_tarjeta, m.numero_tarjeta, m.vencimiento, m. cod_verificacion, m. nombre_banco, m.sucursal_banco, m.tipo, m.nro_cuenta, m.cbu";
+						   "WHERE (ap.dni_donante = p.dni) AND (ap.cod_pago = m.cod_pago) GROUP BY p.dni, m.cod_pago, m.nombre_tarjeta, m.numero_tarjeta, "+
+						   "m.vencimiento, m. cod_verificacion, m. nombre_banco, m.sucursal_banco, m.tipo, m.nro_cuenta, m.cbu";
 		//String query = 
 		Statement statement = connection.createStatement();
 		ResultSet resultSet = statement.executeQuery(queryAux3);
@@ -194,10 +195,10 @@ public class ResultSetCiudadDeLosNiños {
 		String queryAux2 = 	"SELECT cod_pago, 'no aplica' AS nombre_tarjeta, null AS numero_tarjeta, null AS vencimiento, "+
 						    "null AS cod_verificacion, nombre_banco, sucursal_banco, tipo, nro_cuenta, cbu FROM  debito_transferencia";		   
 		
-		String queryAux3 = "SELECT p.dni, p.nombre, p.apellido, ap.monto, m.cod_pago, m.nombre_tarjeta, m.numero_tarjeta, "+
+		String queryAux3 = "SELECT p.dni, p.nombre, p.apellido, SUM(ap.monto) AS monto_total, m.cod_pago, m.nombre_tarjeta, m.numero_tarjeta, "+
 						   "m.vencimiento, m. cod_verificacion, m. nombre_banco, m.sucursal_banco, m.tipo, m.nro_cuenta, m.cbu "+
 						   "FROM aporta ap, ("+queryAux1+" UNION "+queryAux2+") m, persona p "+
-						   "WHERE (ap.dni_donante = p.dni) AND (ap.cod_pago = m.cod_pago) AND (ap.frecuencia = 'mensual') GROUP BY p.dni, ap.monto, m.cod_pago, m.nombre_tarjeta, m.numero_tarjeta, m.vencimiento, m. cod_verificacion, m. nombre_banco, m.sucursal_banco, m.tipo, m.nro_cuenta, m.cbu";
+						   "WHERE (ap.dni_donante = p.dni) AND (ap.cod_pago = m.cod_pago) AND (ap.frecuencia = 'mensual') GROUP BY p.dni, m.cod_pago, m.nombre_tarjeta, m.numero_tarjeta, m.vencimiento, m. cod_verificacion, m. nombre_banco, m.sucursal_banco, m.tipo, m.nro_cuenta, m.cbu";
 		//String query = 
 		Statement statement = connection.createStatement();
 		ResultSet resultSet = statement.executeQuery(queryAux3);
@@ -231,10 +232,10 @@ public class ResultSetCiudadDeLosNiños {
 			System.out.println("Ingrese el numero de la operacion que quiere realizar");
 			System.out.println("1) Insertar un padrino.");
 			System.out.println("2) Eliminar un donante.");
-			System.out.println("3) Ver donantes que aportan a mas de un programa.");
+			System.out.println("3) Ver donantes que aportan a mas de dos programa.");
 			System.out.println("4) Ver los aportes que recibe cada programa.");
 			System.out.println("5) Ver los donantes con sus aportes totales.");
-			System.out.println("6) Ver los donantes con su aporte y su medio de pago.");
+			System.out.println("6) Ver los donantes con su aporte total y su medio de pago.");
 			System.out.println("7) Ver los donantes con aporte mensual y su medio de pago.");
 			System.out.println("8) Salir.");
 			Scanner sc = new Scanner(System.in);
@@ -246,7 +247,7 @@ public class ResultSetCiudadDeLosNiños {
 			if(selection==5){showDonantesWithAporta(connection);};
 			if(selection==6){showDonanteAportMedioPago(connection);};
 			if(selection==7){showDonanteAportMedioPagoMensuales(connection);};
-			if((selection<=0)||(selection>8)){System.out.println("Opcion incorrecta");};
+			if((selection<=0)||(selection>8)){System.out.println("Opcion incorrecta, vuelva a intentarlo"+"\n");};
 		}
 	}
 
